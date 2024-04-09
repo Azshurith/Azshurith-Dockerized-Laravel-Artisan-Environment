@@ -18,7 +18,7 @@ services:
         depends_on:
             - mariadb
         networks:
-            - shared_network
+            - laravel
         environment:
             DB_CONNECTION: ${MARIADB_CONNECTION}
             DB_HOST: ${MARIADB_HOST}
@@ -47,7 +47,7 @@ services:
         volumes:
             - database:/var/lib/mysql
         networks:
-            - shared_network
+            - laravel
 
     # Configuration for the phpMyAdmin service            
     phpmyadmin:
@@ -65,11 +65,11 @@ services:
         depends_on:
             - mariadb
         networks:
-            - shared_network
+            - laravel
 
 # Define the Project's Network
 networks:
-    shared_network:
+    laravel:
         driver: bridge
 
 # Define the Project's Volumes

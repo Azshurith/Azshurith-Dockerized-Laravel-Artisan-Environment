@@ -8,7 +8,13 @@ php_start: ## Start PHP Server
 	docker exec -it -u root ${PROJECT_NAME}-php php artisan serve --host 0.0.0.0 --port 8000
 
 php_migrate: ## Run Database Migrations
-	docker exec -it -u root ${PROJECT_NAME}-php php artisan migrate
+	docker exec -it -u root ${PROJECT_NAME}-php php artisan migrate:refresh
+
+php_flush: ## Clear Artisan Config
+	docker exec -it -u root ${PROJECT_NAME}-php php artisan optimize:clear
+
+php_route: ## Clear Artisan Config
+	docker exec -it -u root ${PROJECT_NAME}-php	php artisan route:list -v
 
 project_create: ## Execute Command to Server Container
 	docker exec -it -u root ${PROJECT_NAME}-php composer create-project laravel/laravel .
