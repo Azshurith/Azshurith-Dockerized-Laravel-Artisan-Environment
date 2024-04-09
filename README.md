@@ -18,14 +18,22 @@ destroy_project      Deletes the Project
 Ensure to set up your environment variables in the .env file.
 
 ```dotenv
-# Docker Project
-PROJECT=
+# Docker Configuration
+PROJECT_NAME=
+PROJECT_VERSION=1.0
 
-# Database Credentials
-DB_PORT=
-DB_NAME=
-DB_USERNAME=
-DB_PASSWORD=
+# Php Configurations
+PHP_DOCKERFILE=.docker/Php/
+
+# Database Configurations
+MARIADB_PORT=
+MARIADB_DATABASE=
+MARIADB_USERNAME=
+MARIADB_PASSWORD=
+MARIADB_DOCKERFILE=.docker/MariaDB/
+
+# PhpMyAdmin Configurations
+PHPMYADMIN_DOCKERFILE=.docker/PhpMyAdmin/
 
 # Project Configuration
 PROJECT_REPOSITORY=
@@ -38,9 +46,12 @@ PROJECT_REPOSITORY=
 
 ### Installation 📦
 
-1. Set up your environment variables in the .env file.
-2. Run make start_project to start the Docker environment.
-3. Access your Laravel application at http://localhost:8000.
+1. Copy the `.env.sample` and setup the variables thru executing `cp .env.sample .env`.
+2. Start the docker project thru executing the command `make project_start`.
+3. Download laravel project thru executing the command `make project_create`.
+4. Shutdown docker thru running `make project_stop`.
+5. Start docker thru running `make project_start`.
+6. Access your Laravel application at http://localhost:8000.
 
 ## Contributing 🤝
 

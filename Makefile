@@ -1,15 +1,24 @@
 # Include Environment Variables
 include .env
 
-help: ## Displays all available Commands
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+php_deploy: ## Execute Command to Server Container
+	docker exec -it -u root ${PROJECT_NAME}-php /bin/bash
 
-start_project: ## Starts the Project
-	docker compose up
+php_start: ## Start PHP Server
+	docker exec -it -u root ${PROJECT_NAME}-php php artisan serve --host 0.0.0.0 --port 8000
 
-stop_project: ## Stops the Project
-	docker compose stop
+php_migrate: ## Run Database Migrations
+	docker exec -it -u root ${PROJECT_NAME}-php php artisan migrate
 
-destroy_project: ## Deletes the Project
+project_create: ## Execute Command to Server Container
+	docker exec -it -u root ${PROJECT_NAME}-php composer create-project laravel/laravel .
+
+project_start: ## Starts the Project
+	docker compose up -d
+
+project_stop: ## Stops the Project
+	docker compose down
+
+project_destroy: ## Deletes the Project
 	docker compose down -v
-	docker rmi ${PROJECT}
+	docker rmi ${PROJECT_NAME}

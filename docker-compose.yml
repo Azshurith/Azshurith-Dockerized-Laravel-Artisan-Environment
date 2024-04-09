@@ -4,42 +4,44 @@ version: "3"
 # Define the services that make up your application
 services:
 
-    # Configuration for the web service
-    web:
-        container_name: ${PROJECT}-web
-        working_dir: /var/www
-        image: ${PROJECT-web}
+    # Configuration for the php service
+    php:
+        container_name: ${PROJECT_NAME}-php
+        image: ${PROJECT_NAME}-php:${PROJECT_NAME}-${PROJECT_VERSION}
         build:
             context: .
-            dockerfile: .docker/Web/Dockerfile
-        environment:
-            DB_HOST: ${PROJECT}-database
-            DB_PORT: ${DB_PORT}
-            DB_DATABASE: ${DB_NAME}
-            DB_USERNAME: ${DB_USERNAME}
-            DB_PASSWORD: ${DB_PASSWORD}
+            dockerfile: ${PHP_DOCKERFILE}Dockerfile
         ports:
             - "8000:8000"
         volumes:
-            - .:/var/www
+            - ./Php:/var/Php
+        depends_on:
+            - mariadb
         networks:
             - shared_network
-        depends_on:
-            - database
-        entrypoint: /usr/local/bin/entrypoint.sh
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
+        environment:
+            DB_CONNECTION: ${MARIADB_CONNECTION}
+            DB_HOST: ${MARIADB_HOST}
+            DB_PORT: ${MARIADB_PORT}
+            DB_DATABASE: ${MARIADB_DATABASE}
+            DB_USERNAME: ${MARIADB_USERNAME}
+            DB_PASSWORD: ${MARIADB_PASSWORD}
+        working_dir: /var/Php
+        command: sh -c '[ -z "$(ls -A /var/Php)" ] && tail -F /dev/null || php artisan serve --host 0.0.0.0 --port 8000'
 
     # Configuration for the database service
-    database:
-        container_name: ${PROJECT}-database
-        image: "mariadb"
+    mariadb:
+        container_name: ${PROJECT_NAME}-mariadb
+        image: ${PROJECT_NAME}-mariadb:${PROJECT_NAME}-${PROJECT_VERSION}
+        build:
+            context: .
+            dockerfile: ${MARIADB_DOCKERFILE}Dockerfile
         tty: true
         environment:
-            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-            MYSQL_DATABASE: ${DB_NAME}
-            MYSQL_USER: ${DB_USERNAME}
-            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${MARIADB_DATABASE}
+            MYSQL_USER: ${MARIADB_USERNAME}
+            MYSQL_PASSWORD: ${MARIADB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${MARIADB_PASSWORD}
         ports:
             - "3306:3306"
         volumes:
@@ -47,19 +49,21 @@ services:
         networks:
             - shared_network
 
-    # Configuration for the phpMyAdmin service
+    # Configuration for the phpMyAdmin service            
     phpmyadmin:
-        container_name: ${PROJECT}-phpmyadmin
-        image: phpmyadmin/phpmyadmin
-        environment:
-            PMA_HOST: database
-            PMA_PORT: ${DB_PORT}
-            PMA_USER: root
-            PMA_PASSWORD: ${DB_PASSWORD}
+        container_name: ${PROJECT_NAME}-phpmyadmin
+        image: ${PROJECT_NAME}-phpmyadmin:${PROJECT_NAME}-${PROJECT_VERSION}
+        build:
+            context: .
+            dockerfile: ${PHPMYADMIN_DOCKERFILE}/Dockerfile
         ports:
             - "8080:80"
+        environment:
+            PMA_HOST: mariadb
+            PMA_USER: ${MARIADB_USERNAME}
+            PMA_PASSWORD: ${MARIADB_PASSWORD}
         depends_on:
-            - database
+            - mariadb
         networks:
             - shared_network
 
