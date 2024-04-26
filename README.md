@@ -8,9 +8,9 @@ This repository contains a Docker environment for Laravel applications utilizing
 
 ```makefile
 help                 Displays all available Commands
-start_project        Starts the Project
-stop_project         Stops the Project
-destroy_project      Deletes the Project
+project_start        Starts the Project
+project_stop         Stops the Project
+project_destroy      Deletes the Project
 ```
 
 ## 📝 Environment Variables (.env)
@@ -21,22 +21,22 @@ Ensure to set up your environment variables in the .env file.
 # Docker Configuration
 PROJECT_NAME=
 PROJECT_VERSION=1.0
+PROJECT_REPOSITORY=
 
 # Php Configurations
 PHP_DOCKERFILE=.docker/Php/
 
 # Database Configurations
-MARIADB_PORT=
-MARIADB_DATABASE=
-MARIADB_USERNAME=
-MARIADB_PASSWORD=
+MARIADB_CONNECTION=mysql
+MARIADB_HOST=host.docker.internal
+MARIADB_PORT=3306
+MARIADB_DATABASE=Laravel
+MARIADB_USERNAME=laravel
+MARIADB_PASSWORD=laravel
 MARIADB_DOCKERFILE=.docker/MariaDB/
 
 # PhpMyAdmin Configurations
 PHPMYADMIN_DOCKERFILE=.docker/PhpMyAdmin/
-
-# Project Configuration
-PROJECT_REPOSITORY=
 ```
 ## 🚀 Getting Started
 
